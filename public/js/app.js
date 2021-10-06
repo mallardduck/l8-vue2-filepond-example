@@ -2108,7 +2108,20 @@ var FilePond = vue_filepond__WEBPACK_IMPORTED_MODULE_0___default()(filepond_plug
     return {
       serverOptions: {
         process: function process(fieldName, file, metadata, load, error) {
-          console.log(fieldName, file, metadata);
+          var formData = new FormData();
+          formData.append(fieldName, file, file.name);
+          axios({
+            method: "POST",
+            url: '/chat/room/upload',
+            data: formData,
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          }).then(function () {
+            load();
+          })["catch"](function () {
+            error();
+          });
         }
       },
       files: []

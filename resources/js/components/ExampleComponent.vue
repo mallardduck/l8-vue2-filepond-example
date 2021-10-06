@@ -40,7 +40,22 @@ export default {
     return {
       serverOptions: {
         process: (fieldName, file, metadata, load, error) => {
-          console.log(fieldName, file, metadata);
+          const formData = new FormData();
+          formData.append(fieldName, file, file.name);
+          axios({
+            method: "POST",
+            url: '/chat/room/upload',
+            data: formData,
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          })
+          .then(() => {
+            load();
+          })
+          .catch(() => {
+            error();
+          });
         }
       },
       files: [],
