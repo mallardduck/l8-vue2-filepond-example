@@ -6,7 +6,16 @@
                     <div class="card-header">Example Component</div>
 
                     <div class="card-body">
-                        I'm an example component.
+                        <file-pond
+                          name="photo"
+                          ref="pond"
+                          label-idle="Drop files here..."
+                          allow-multiple="false"
+                          :accepted-file-types="['image/*']"
+                          max-files="1"
+                          :files="files"
+                          :server="serverOptions"
+                        />
                     </div>
                 </div>
             </div>
@@ -15,9 +24,39 @@
 </template>
 
 <script>
-    export default {
-        mounted() {
-            console.log('Component mounted.')
+import vueFilePond from 'vue-filepond';
+
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.esm.js';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.esm.js';
+
+import 'filepond/dist/filepond.min.css';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
+
+const FilePond = vueFilePond( FilePondPluginFileValidateType, FilePondPluginImagePreview );
+
+export default {
+  name: 'app',
+  data: function() {
+    return {
+      serverOptions: {
+        process: (fieldName, file, metadata, load, error) => {
+          console.log(fieldName, file, metadata);
         }
-    }
+      },
+      files: [],
+    };
+  },
+  methods: {
+    handleFilePondInit: function () {
+      console.log('FilePond has initialized');
+
+      // example of instance method call on pond reference
+      this.$refs.pond.getFiles();
+      console.log(this.$refs.pond.getFiles());
+    },
+  },
+  components: {
+    FilePond
+  },
+};
 </script>
